@@ -2,7 +2,10 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+*.json
+*.ics
+*.secret
+*.url
 # C extensions
 *.so
 
