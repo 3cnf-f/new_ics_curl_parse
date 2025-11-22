@@ -26,4 +26,3 @@
 * Semester\, P1
 * Semester\, stafetta
 
-# test
