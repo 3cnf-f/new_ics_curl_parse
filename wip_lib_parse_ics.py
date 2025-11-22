@@ -40,16 +40,20 @@ def fix_timezone(event_start):
     stockholm_time = aware_start.astimezone(target_tz)
     
     # 3. Format as 'hh:mm' (24-hour format)
-    return stockholm_time.strftime('%H:%M')
+    return {'date':stockholm_time.strftime('%Y-%m-%d'), 'time':stockholm_time.strftime('%H:%M'), 'datetime':stockholm_time, 'weeknumber':stockholm_time.isocalendar()[1], 'weekday':stockholm_time.isocalendar()[2]}
 
+test_time = datetime(2023, 9, 1, 14, 30, tzinfo=pytz.UTC)
+print(fix_timezone(test_time)['weeknumber'])
 
 
 ics_path=pathlib.Path("./ics.ics")
 calendar = icalendar.Calendar.from_ical(ics_path.read_bytes())
 for event in calendar.events:
 #converted times:
-    conv_start=fix_timezone(event.start)
-    conv_end=fix_timezone(event.end)
+    print(event)
+    fixed_start=fix_timezone(event.start)
+    fixed_end=fix_timezone(event.end)
 
     #print(event.get("SUMMARY"),event.duration,event.start,event.end)
-    print(f"{event.get('SUMMARY')=} {event.duration=} {event.start=} {event.end=} {conv_start=} {conv_end=}")
+    print(f"\n\n{event.get('SUMMARY')=}\n {event.duration=}\n {event.start=}\n {fixed_start['date']}\n w={fixed_start['weeknumber']}\n wd={fixed_start['weekday']} \n {fixed_start['time']=}\n {event.end=} ")
+    user_input=input("press enter to continue")

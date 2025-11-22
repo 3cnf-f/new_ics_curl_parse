@@ -7,7 +7,7 @@ try:
     response = requests.get(url_in)
     if response.status_code == 200:
 
-        with open('ics.ics','w') as f:
+        with open('ics2.ics','w') as f:
             f.write(response.text)
         print(response.text)
     else:
