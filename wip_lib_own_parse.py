@@ -80,15 +80,75 @@ def check_type(in_line):
     
     return resulto.group(1),resulto.group(3)
 
+def flatten_calendar_data(nested_data):
+    """
+    Converts the nested date-bucketed calendar dictionary into a flat list of event dictionaries.
+    
+    Args:
+        nested_data (dict): The original dictionary with dates as keys.
+        
+    Returns:
+        list: A list of dictionaries, where each dictionary is a single, self-contained event.
+    """
+    flat_events = []
+
+    for date_key, bucket in nested_data.items():
+        # Extract parent 'bucket' info (shared by all events on this day)
+        week_number = bucket.get('weeknumber')
+        weekday = bucket.get('weekday')
+
+        for event in bucket.get('event_list', []):
+            # 1. Base object with the parent info included
+            flat_event = {
+                'date_key': date_key,
+                'weeknumber': week_number,
+                'weekday': weekday,
+                'summary': event.get('summary'),
+                'start_time': event.get('datetime_object'),
+                'has_time': event.get('has_time', False),
+                'raw_lines': event.get('all_lines', [])
+            }
+
+            # 2. Extract specific fields buried in 'all_lines'
+            # We iterate through lines to find UID and LOCATION
+            uid = None
+            location = None
+            
+            for line in flat_event['raw_lines']:
+                if line.startswith('UID:'):
+                    # Split only on the first colon to handle complex IDs
+                    uid = line.split(':', 1)[1] 
+                elif line.startswith('LOCATION:'):
+                    location = line.split(':', 1)[1]
+
+            flat_event['uid'] = uid
+            flat_event['location'] = location
+
+            # 3. Add to the master list
+            flat_events.append(flat_event)
+
+    return flat_events
+
+
+
+
+
+        
+
 if __name__ == "__main__":
     ics_file_path = "ics2.ics"
     ics_data = read_ics_file(ics_file_path)
-    calendar = get_events(ics_data)
-    for date in calendar:
+    nested_calendar = get_events(ics_data)
+    calendar = flatten_calendar_data(nested_calendar)
+    pass
+    pass
+    calendar2=calendar
+    pass
+    for date in nested_calendar:
         print(date)
-        print(calendar[date]["weekday"])
-        print(calendar[date]["weeknumber"])
-        for event in calendar[date]["event_list"]:
+        print(f"{ nested_calendar[date]["weekday"]= }")
+        print(f"{ nested_calendar[date]["weeknumber"]= }")
+        for event in nested_calendar[date]["event_list"]:
             print(f"  {event["summary"]=}")
             print(f"  {event["datetime_object"]=}")
 
