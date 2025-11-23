@@ -140,18 +140,9 @@ if __name__ == "__main__":
     ics_data = read_ics_file(ics_file_path)
     nested_calendar = get_events(ics_data)
     calendar = flatten_calendar_data(nested_calendar)
-    pass
-    pass
-    calendar2=calendar
-    pass
-    for date in nested_calendar:
-        print(date)
-        print(f"{ nested_calendar[date]["weekday"]= }")
-        print(f"{ nested_calendar[date]["weeknumber"]= }")
-        for event in nested_calendar[date]["event_list"]:
-            print(f"  {event["summary"]=}")
-            print(f"  {event["datetime_object"]=}")
+    thislist=[(x['summary'],x['start_time'],x['weeknumber']) for x in calendar if x['weeknumber'] == 39]
+    thislist2=[(x['summary'],x['weekday'],x['weeknumber']) for x in calendar if 'jour' in x['summary'].lower()]
+    # print([x['SU'] for x in calendar if x['weeknumber'] == 39])
+    # print(thislist)
+    print()
 
-
-        # print(line)
-    # user hits enter to exit
