@@ -129,7 +129,20 @@ def flatten_calendar_data(nested_data):
 
     return flat_events
 
+def get_flat_list(in_filename):
+    flattend_this=flatten_calendar_data(get_events(read_ics_file(in_filename)))
+    return flattend_this
 
+def timestamp_str_t_utc(timestamp_str):
+    return datetime.strptime(timestamp_str, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+
+
+def get_datestamp(in_flatlist):
+
+    this_update=[x for x in in_flatlist[0]['raw_lines'] if 'DTSTAMP' in x][0][8:]
+    this_update_date_object = timestamp_str_t_utc(this_update)
+    tud_epoch = this_update_date_object.timestamp()
+    return tud_epoch,this_update_date_object
 
 
 

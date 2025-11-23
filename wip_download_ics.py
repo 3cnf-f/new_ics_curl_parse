@@ -1,16 +1,21 @@
 import requests
-with open('ics.url') as f:
-    url_raw = f.read()
+def dl_ics():
+    status=None
+    with open('ics.url') as f:
+        url_raw = f.read()
 
-url_in=url_raw.strip('\n')
-try:
-    response = requests.get(url_in)
-    if response.status_code == 200:
+    url_in=url_raw.strip('\n')
+    try:
+        response = requests.get(url_in)
+        if response.status_code == 200:
 
-        with open('ics2.ics','w') as f:
-            f.write(response.text)
-        print(response.text)
-    else:
-        print(f"error code from requests {response.status_code}")
-except requests.exceptions.RequestException as e:
-    print(f'the following error ocurred {e}')
+            with open('ics2.ics','w') as f:
+                f.write(response.text)
+            status="downloaded"
+            return status
+        else:
+            print(f"error code from requests {response.status_code}")
+            return response.status_code
+    except requests.exceptions.RequestException as e:
+        print(f'the following error ocurred {e}')
+        return e
